@@ -6,21 +6,14 @@ import {
   Scissors,
   Sparkles,
   WandSparkles,
-  Check,
   Play,
   Download,
   Youtube,
-  Share2,
-  SlidersHorizontal,
   Volume2,
   Image as ImageIcon,
-  FileText,
-  Clock,
   Loader2,
   CheckCircle2,
   Coins,
-  Plus,
-  RefreshCw,
 } from 'lucide-react';
 import {
   Lang,
@@ -30,6 +23,7 @@ import {
   VOICE_LIBRARY,
   MOTION_GENRES,
 } from '../data/mockData';
+import { renderProductionVideo, GeneratedPlan } from '../lib/videoRenderer';
 
 interface AutoVideoStudioProps {
   lang: Lang;
@@ -69,6 +63,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
   const [autoYoutube, setAutoYoutube] = useState<boolean>(false);
   const [playingJobId, setPlayingJobId] = useState<string | null>(null);
   const [activeGeneratingJob, setActiveGeneratingJob] = useState<VideoJob | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const calculateCost = (): number => {
     if (mode === 'video') {
@@ -81,22 +76,24 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
     if (mode === 'audiobook') {
       return tier === 'short' ? 2 : tier === 'medium' ? 3 : 5;
     }
-    return 5; // AutoClipper: 3 block + 2 clip
+    return 5;
   };
 
   const currentCost = calculateCost();
 
-  const handleStartGenerate = (e: React.FormEvent) => {
+  const handleStartGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     const defaultTopic =
       mode === 'clipper'
-        ? `Klip YouTube (${clipCriteria.toUpperCase()}): ${youtubeUrl}`
+        ? `Klip Video (${clipCriteria.toUpperCase()}): ${youtubeUrl}`
         : topic.trim() ||
           (mode === 'motion'
             ? 'Kopi Susu Aren Toko Senja — Promo Diskon 20%'
             : mode === 'audiobook'
             ? 'Episode 2: Rahasia Benteng Batavia di Malam Tahun Baru'
-            : 'Sejarah Kerajaan Majapahit dan Sumpah Palapa Gajah Mada');
+            : 'Misteri pembangunan Candi Borobudur tanpa semen');
 
     if (walletBalance < currentCost) {
       onOpenTopUp();
@@ -104,15 +101,6 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
     }
 
     const newJobId = `job-${Date.now()}`;
-    const ytSample =
-      mode === 'motion'
-        ? format === '9:16'
-          ? 'wLf1NwaNijM'
-          : 'C3aS6HSPZsw'
-        : format === '9:16'
-        ? 't0h2rd4Rl6k'
-        : 'BpKG9cGpx0I';
-
     const runningJob: VideoJob = {
       id: newJobId,
       topic: defaultTopic,
@@ -122,60 +110,87 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       style: mode === 'motion' ? `Motion (${motionGenre} · ${motionDuration}s)` : style,
       voice,
       status: 'running',
-      progress: 15,
-      stageLabel: t('Menulis naskah dan menyusun adegan...', 'Writing script and laying out scenes...'),
-      createdAt: 'Baru saja',
+      progress: 12,
+      stageLabel: t(
+        'Menulis naskah dan menyusun adegan...',
+        'Writing script and laying out scenes...'
+      ),
+      createdAt: t('Baru saja', 'Just now'),
       tokensUsed: currentCost,
-      youtubeId: ytSample,
-      scenesCount: mode === 'audiobook' ? 1 : tier === 'short' ? 14 : tier === 'medium' ? 28 : 45,
-      scriptPreview:
-        customScript.trim() ||
-        `[Naskah Otomatis ReelMotion AI] — ${defaultTopic}. Riset web selesai: 6 sumber kredibilitas tinggi dirangkum menjadi narasi penuh dengan sinkronisasi subtitle kata-demi-kata...`,
+      scenesCount: tier === 'short' ? 4 : tier === 'medium' ? 6 : 8,
     };
 
     setActiveGeneratingJob(runningJob);
 
-    setTimeout(() => {
-      setActiveGeneratingJob((prev) =>
-        prev
-          ? {
-              ...prev,
-              progress: 55,
-              stageLabel: t(
-                'Merekam narasi VoxCPM2 & melukis gambar Z-Image Turbo...',
-                'Recording VoxCPM2 narration & rendering Z-Image Turbo...'
-              ),
-            }
-          : null
-      );
-    }, 1100);
+    try {
+      // 1. Call serverless backend (/api/generate) -> Sakelar API behind the scenes
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: defaultTopic,
+          mode,
+          format,
+          tier,
+          style,
+          customScript: customScript.trim(),
+          lang,
+          motionGenre,
+        }),
+      });
 
-    setTimeout(() => {
-      setActiveGeneratingJob((prev) =>
-        prev
-          ? {
-              ...prev,
-              progress: 85,
-              stageLabel: t(
-                'Menyatukan video & menyelaraskan teks per kata (Stable-Whisper)...',
-                'Assembling video & aligning word-by-word subtitles...'
-              ),
-            }
-          : null
-      );
-    }, 2200);
+      if (!res.ok) {
+        throw new Error(t('Gagal menyiapkan naskah video.', 'Failed to prepare video script.'));
+      }
 
-    setTimeout(() => {
-      const completed: VideoJob = {
+      const plan: GeneratedPlan = await res.json();
+      const fullNarration = plan.scenes.map((s) => s.narration).join(' ');
+
+      // 2. Render Real Video (Audio TTS + Visuals + Karaoke Subtitles -> .webm Blob)
+      const { videoUrl } = await renderProductionVideo({
+        plan,
+        mode,
+        format,
+        style,
+        lang,
+        onProgress: (pct, stageText) => {
+          setActiveGeneratingJob((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  progress: pct,
+                  stageLabel: stageText,
+                }
+              : null
+          );
+        },
+      });
+
+      const completedJob: VideoJob = {
         ...runningJob,
+        topic: plan.title || defaultTopic,
         status: 'done',
         progress: 100,
         stageLabel: t('Video siap!', 'Video ready!'),
+        videoUrl,
+        caption: plan.caption,
+        hashtags: plan.hashtags,
+        scenesCount: plan.scenes.length,
+        scriptPreview: fullNarration,
       };
+
       setActiveGeneratingJob(null);
-      onCreateJob(completed, currentCost);
+      onCreateJob(completedJob, currentCost);
+      setPlayingJobId(completedJob.id);
       setTopic('');
-    }, 3300);
+    } catch (err: unknown) {
+      setActiveGeneratingJob(null);
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : t('Terjadi kendala saat membuat video. Silakan coba lagi.', 'Could not create video. Please try again.')
+      );
+    }
   };
 
   const modes: {
@@ -190,8 +205,8 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       name: 'Faceless',
       badge: '9:16 & 16:9',
       desc: t(
-        'Video bergambar AI dengan suara narator & subtitle karaoke.',
-        'AI illustrated video with narrator voice & karaoke subtitles.'
+        'Video bergambar ilustrasi dengan suara narator & teks menyala per kata.',
+        'Illustrated video with narrator voice & word-by-word highlighted subtitles.'
       ),
       icon: <Clapperboard className="h-4 w-4" />,
     },
@@ -200,8 +215,8 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       name: 'Motion',
       badge: '10s–120s',
       desc: t(
-        'Animasi grafis bergerak: teks, ikon, grafik, dan tokoh.',
-        'Animated motion graphics: kinetic typography, icons, charts, characters.'
+        'Animasi grafis bergerak: teks, ikon, grafik, dan tokoh untuk iklan & edukasi.',
+        'Animated motion graphics: kinetic text, icons, charts, and characters.'
       ),
       icon: <Sparkles className="h-4 w-4" />,
     },
@@ -210,7 +225,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       name: 'AudioBook',
       badge: t('Per Episode', 'Per Episode'),
       desc: t(
-        'Buku atau cerita panjang dibacakan narator dengan sorot kata.',
+        'Buku atau cerita panjang dibacakan narator dengan sorot kata di layar.',
         'Long stories narrated with synchronized on-screen reading text.'
       ),
       icon: <Headphones className="h-4 w-4" />,
@@ -220,8 +235,8 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       name: 'AutoClipper',
       badge: 'YouTube → 9:16',
       desc: t(
-        'Potong video YouTube panjang menjadi beberapa klip vertikal.',
-        'Slice long YouTube videos into viral vertical short clips.'
+        'Potong video YouTube panjang menjadi beberapa klip vertikal siap tayang.',
+        'Slice long YouTube videos into ready-to-post vertical short clips.'
       ),
       icon: <Scissors className="h-4 w-4" />,
     },
@@ -232,28 +247,27 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-default)] pb-5">
         <div>
-          <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--accent-amber)]">
+          <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#4D5BAF]">
             <WandSparkles className="h-3.5 w-3.5" />
-            {t('STUDIO AUTO KONTEN AI', 'AI AUTO CONTENT STUDIO')}
+            {t('STUDIO KONTEN OTOMATIS', 'AUTOMATED CONTENT STUDIO')}
           </div>
           <h1 className="mt-1 font-display text-2xl sm:text-3xl font-bold tracking-tight">
-            {t('Buat Video & Konten Otomatis', 'Create Automated Videos & Content')}
+            {t('Buat Video Siap Tayang', 'Create Ready-to-Post Videos')}
           </h1>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--bg-card)] px-3.5 py-2 text-[13px]">
+          <div className="flex items-center gap-2 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] px-4 py-2 text-[12.5px]">
             <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
-            <span className="text-[var(--text-muted)]">{t('Mesin Server:', 'Server Sidecar:')}</span>
             <span className="font-semibold text-[var(--text-primary)]">
-              {t('Aktif (Kaggle T4x2 + RunPod)', 'Active (Kaggle T4x2 + RunPod)')}
+              {t('Studio Siap Memproduksi', 'Studio Ready')}
             </span>
           </div>
         </div>
       </div>
 
       {/* 4 Mode Selector Tabs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {modes.map((m) => {
           const active = mode === m.id;
           return (
@@ -261,22 +275,34 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
               key={m.id}
               type="button"
               onClick={() => setMode(m.id)}
-              className={`flex flex-col justify-between rounded-2xl border p-4 text-left transition cursor-pointer ${
+              className={`flex flex-col justify-between rounded-3xl border p-4 text-left transition cursor-pointer ${
                 active
-                  ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] shadow-md'
-                  : 'border-[var(--border-default)] bg-[var(--bg-card)] hover:border-[var(--border-hover)]'
+                  ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white shadow-md shadow-[#4D5BAF]/25'
+                  : 'border-[var(--border-default)] bg-[var(--bg-surface)] hover:border-[#4D5BAF]/50'
               }`}
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-2 font-display text-[15px] font-bold">
-                  <span className="text-[var(--accent-amber)]">{m.icon}</span>
+                  <span className={active ? 'text-[#FFA143]' : 'text-[#4D5BAF]'}>{m.icon}</span>
                   <span>{m.name}</span>
                 </div>
-                <span className="rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] px-2 py-0.5 text-[10.5px] font-semibold text-[var(--text-muted)]">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10.5px] font-semibold ${
+                    active
+                      ? 'bg-white/20 text-white'
+                      : 'bg-[var(--bg-secondary)] text-[var(--text-muted)]'
+                  }`}
+                >
                   {m.badge}
                 </span>
               </div>
-              <p className="mt-2 text-[12.5px] leading-snug text-[var(--text-muted)]">{m.desc}</p>
+              <p
+                className={`mt-2 text-[12.5px] leading-snug ${
+                  active ? 'text-white/85' : 'text-[var(--text-muted)]'
+                }`}
+              >
+                {m.desc}
+              </p>
             </button>
           );
         })}
@@ -287,7 +313,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
         {/* Form Builder */}
         <form
           onSubmit={handleStartGenerate}
-          className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-5 sm:p-6 space-y-5"
+          className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-5 sm:p-6 space-y-5"
         >
           {/* Format & Duration Row */}
           <div className="grid gap-4 sm:grid-cols-2">
@@ -299,26 +325,26 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                 <button
                   type="button"
                   onClick={() => setFormat('9:16')}
-                  className={`flex items-center justify-center gap-2 rounded-xl border py-2.5 text-[13px] font-semibold cursor-pointer transition ${
+                  className={`flex items-center justify-center gap-2 rounded-full border py-2.5 text-[13px] font-semibold cursor-pointer transition ${
                     format === '9:16'
-                      ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] text-[var(--text-primary)]'
-                      : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-muted)]'
+                      ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                      : 'border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
                   }`}
                 >
-                  <Clapperboard className="h-4 w-4 text-[var(--accent-amber)]" />
+                  <Clapperboard className="h-4 w-4" />
                   <span>9:16 {t('Vertikal', 'Vertical')}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setFormat('16:9')}
                   disabled={mode === 'clipper'}
-                  className={`flex items-center justify-center gap-2 rounded-xl border py-2.5 text-[13px] font-semibold cursor-pointer transition disabled:opacity-40 ${
+                  className={`flex items-center justify-center gap-2 rounded-full border py-2.5 text-[13px] font-semibold cursor-pointer transition disabled:opacity-40 ${
                     format === '16:9'
-                      ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] text-[var(--text-primary)]'
-                      : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-muted)]'
+                      ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                      : 'border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
                   }`}
                 >
-                  <MonitorPlay className="h-4 w-4 text-[var(--accent-amber)]" />
+                  <MonitorPlay className="h-4 w-4" />
                   <span>16:9 {t('Horizontal', 'Horizontal')}</span>
                 </button>
               </div>
@@ -327,7 +353,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
             {mode === 'motion' ? (
               <div>
                 <label className="block text-[12px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
-                  {t('Durasi Animasi Motion', 'Motion Duration')}
+                  {t('Durasi Video Motion', 'Motion Duration')}
                 </label>
                 <div className="grid grid-cols-5 gap-1.5">
                   {(['10', '30', '60', '90', '120'] as const).map((d) => (
@@ -335,10 +361,10 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                       key={d}
                       type="button"
                       onClick={() => setMotionDuration(d)}
-                      className={`rounded-xl border py-2.5 text-[12.5px] font-bold cursor-pointer transition ${
+                      className={`rounded-full border py-2.5 text-[12.5px] font-bold cursor-pointer transition ${
                         motionDuration === d
-                          ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] text-[var(--text-primary)]'
-                          : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-muted)]'
+                          ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                          : 'border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
                       }`}
                     >
                       {d}s
@@ -363,10 +389,10 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                       key={tr.id}
                       type="button"
                       onClick={() => setTier(tr.id)}
-                      className={`rounded-xl border py-2.5 text-[12.5px] font-semibold cursor-pointer transition ${
+                      className={`rounded-full border py-2.5 text-[12.5px] font-semibold cursor-pointer transition ${
                         tier === tr.id
-                          ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] text-[var(--text-primary)]'
-                          : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-muted)]'
+                          ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                          : 'border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
                       }`}
                     >
                       {isEn ? tr.enLabel : tr.idLabel}
@@ -389,13 +415,13 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
-                  className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3.5 py-2.5 text-[13.5px] text-[var(--text-primary)] focus:border-[var(--accent-amber)] focus:outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-4 py-2.5 text-[13.5px] text-[var(--text-primary)] focus:border-[#4D5BAF] focus:outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-[12.5px] font-semibold text-[var(--text-primary)] mb-1.5">
-                  {t('Kriteria Momen Terbaik (AI Selector)', 'Best Moment Criteria (AI Selector)')}
+                  {t('Pilih Jenis Momen Terbaik', 'Select Best Moment Style')}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
@@ -410,10 +436,10 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                       key={c.id}
                       type="button"
                       onClick={() => setClipCriteria(c.id)}
-                      className={`rounded-xl border px-3 py-2 text-left text-[12px] font-semibold cursor-pointer transition ${
+                      className={`rounded-2xl border px-3 py-2 text-left text-[12px] font-semibold cursor-pointer transition ${
                         clipCriteria === c.id
-                          ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)] text-[var(--text-primary)]'
-                          : 'border-[var(--border-default)] bg-[var(--bg-input)] text-[var(--text-muted)]'
+                          ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                          : 'border-[var(--border-default)] bg-[var(--bg-secondary)] text-[var(--text-muted)]'
                       }`}
                     >
                       {c.label}
@@ -435,16 +461,20 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                         key={g.id}
                         type="button"
                         onClick={() => setMotionGenre(g.id)}
-                        className={`rounded-xl border p-2.5 text-left transition cursor-pointer ${
+                        className={`rounded-2xl border p-2.5 text-left transition cursor-pointer ${
                           motionGenre === g.id
-                            ? 'border-[var(--accent-amber)] bg-[var(--accent-amber-bg)]'
-                            : 'border-[var(--border-default)] bg-[var(--bg-input)]'
+                            ? 'border-[#4D5BAF] bg-[#4D5BAF] text-white'
+                            : 'border-[var(--border-default)] bg-[var(--bg-secondary)]'
                         }`}
                       >
                         <div className="text-[12.5px] font-bold">
                           {isEn ? g.enLabel : g.idLabel}
                         </div>
-                        <div className="mt-0.5 text-[11px] text-[var(--text-muted)] line-clamp-1">
+                        <div
+                          className={`mt-0.5 text-[11px] line-clamp-1 ${
+                            motionGenre === g.id ? 'text-white/80' : 'text-[var(--text-muted)]'
+                          }`}
+                        >
                           {isEn ? g.descEn : g.descId}
                         </div>
                       </button>
@@ -479,7 +509,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                           'Example: The mystery of Borobudur Temple built without cement'
                         )
                   }
-                  className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3.5 py-2.5 text-[13.5px] text-[var(--text-primary)] focus:border-[var(--accent-amber)] focus:outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-4 py-2.5 text-[13.5px] text-[var(--text-primary)] focus:border-[#4D5BAF] focus:outline-none"
                 />
               </div>
 
@@ -488,11 +518,8 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                   <label className="text-[12.5px] font-semibold text-[var(--text-primary)]">
                     {mode === 'audiobook'
                       ? t('Naskah Cerita / Novel untuk Dibacakan', 'Story / Book Manuscript to Narrate')
-                      : t('Naskah Sendiri (Opsional - kosongkan agar ditulis AI)', 'Custom Script (Optional - leave blank for AI writer)')}
+                      : t('Naskah Sendiri (Opsional - kosongkan bila ingin ditulis otomatis)', 'Custom Script (Optional - leave blank for automatic script)')}
                   </label>
-                  <span className="text-[11px] text-[var(--text-faint)]">
-                    {t('Otomatis dirapikan untuk TTS', 'Auto-normalized for TTS')}
-                  </span>
                 </div>
                 <textarea
                   rows={3}
@@ -502,7 +529,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                     'Tempel naskah atau poin-poin bahan di sini bila Anda sudah punya naskah sendiri...',
                     'Paste your manuscript or reference notes here if you want to provide your own text...'
                   )}
-                  className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[var(--accent-amber)] focus:outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-4 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#4D5BAF] focus:outline-none"
                 />
               </div>
             </div>
@@ -512,21 +539,21 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--text-primary)] mb-1.5">
-                <ImageIcon className="h-3.5 w-3.5 text-[var(--accent-amber)]" />
+                <ImageIcon className="h-3.5 w-3.5 text-[#4D5BAF]" />
                 {mode === 'audiobook'
-                  ? t('Skin Tata Letak AudioBook', 'AudioBook Layout Skin')
-                  : t('Gaya Visual AI (Z-Image Turbo)', 'AI Visual Style (Z-Image Turbo)')}
+                  ? t('Tema Tampilan AudioBook', 'AudioBook Layout Theme')
+                  : t('Gaya Gambar & Visual', 'Visual & Illustration Style')}
               </label>
               <select
                 value={style}
                 onChange={(e) => setStyle(e.target.value)}
-                className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[var(--accent-amber)] focus:outline-none"
+                className="w-full rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#4D5BAF] focus:outline-none"
               >
                 {mode === 'audiobook' ? (
                   <>
-                    <option value="Skin Bara — Karaoke Word Highlight">Skin Bara — Karaoke Word Highlight</option>
-                    <option value="Skin Aurora — Cinematic Waveform">Skin Aurora — Cinematic Waveform</option>
-                    <option value="Skin Tengah Malam — Minimalist Book">Skin Tengah Malam — Minimalist Book</option>
+                    <option value="Tema Bara — Sorot Kata">Tema Bara — Sorot Kata</option>
+                    <option value="Tema Aurora — Gelombang Suara">Tema Aurora — Gelombang Suara</option>
+                    <option value="Tema Tengah Malam — Buku Klasik">Tema Tengah Malam — Buku Klasik</option>
                   </>
                 ) : (
                   IMAGE_STYLES.map((st) => (
@@ -540,13 +567,13 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
 
             <div>
               <label className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[var(--text-primary)] mb-1.5">
-                <Volume2 className="h-3.5 w-3.5 text-[var(--accent-amber)]" />
-                {t('Pustaka Suara Narator (VoxCPM2)', 'Narrator Voice Library (VoxCPM2)')}
+                <Volume2 className="h-3.5 w-3.5 text-[#4D5BAF]" />
+                {t('Pilihan Suara Narator', 'Narrator Voice')}
               </label>
               <select
                 value={voice}
                 onChange={(e) => setVoice(e.target.value)}
-                className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[var(--accent-amber)] focus:outline-none"
+                className="w-full rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5 text-[13px] text-[var(--text-primary)] focus:border-[#4D5BAF] focus:outline-none"
               >
                 {VOICE_LIBRARY.map((v) => (
                   <option key={v.id} value={v.name}>
@@ -559,46 +586,52 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
 
           {/* Pipeline Toggles */}
           <div className="grid gap-2.5 sm:grid-cols-3 pt-1">
-            <label className="flex items-center gap-2.5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3 py-2.5 text-[12.5px] cursor-pointer">
+            <label className="flex items-center gap-2.5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5 text-[12.5px] cursor-pointer">
               <input
                 type="checkbox"
                 checked={webResearch}
                 onChange={(e) => setWebResearch(e.target.checked)}
-                className="accent-[var(--accent-amber)]"
+                className="accent-[#4D5BAF]"
               />
-              <span>{t('Riset Web Kredibilitas Tinggi', 'Deep Web Research')}</span>
+              <span>{t('Riset Fakta Terbaru', 'Latest Fact Research')}</span>
             </label>
 
-            <label className="flex items-center gap-2.5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3 py-2.5 text-[12.5px] cursor-pointer">
+            <label className="flex items-center gap-2.5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5 text-[12.5px] cursor-pointer">
               <input
                 type="checkbox"
                 checked={reviewEachStep}
                 onChange={(e) => setReviewEachStep(e.target.checked)}
-                className="accent-[var(--accent-amber)]"
+                className="accent-[#4D5BAF]"
               />
               <span>{t('Tinjau Tiap Langkah', 'Step-by-step Review')}</span>
             </label>
 
-            <label className="flex items-center gap-2.5 rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3 py-2.5 text-[12.5px] cursor-pointer">
+            <label className="flex items-center gap-2.5 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5 text-[12.5px] cursor-pointer">
               <input
                 type="checkbox"
                 checked={autoYoutube}
                 onChange={(e) => setAutoYoutube(e.target.checked)}
-                className="accent-[var(--accent-amber)]"
+                className="accent-[#4D5BAF]"
               />
               <span>{t('Unggah Otomatis YouTube', 'Auto-upload YouTube')}</span>
             </label>
           </div>
 
+          {errorMessage && (
+            <div className="rounded-2xl bg-[var(--danger-bg)] px-4 py-3 text-[13px] font-medium text-[var(--danger)]">
+              {errorMessage}
+            </div>
+          )}
+
           {/* Submit & Upfront Token Quote Footer */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[var(--border-default)] pt-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent-amber-bg)] text-[var(--accent-amber)]">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#4D5BAF]/10 text-[#4D5BAF]">
                 <Coins className="h-5 w-5" />
               </div>
               <div>
                 <div className="text-[12px] text-[var(--text-muted)]">
-                  {t('Kutipan Harga (Tahan/Potong per Tahap):', 'Stage-by-Stage Token Quote:')}
+                  {t('Harga Video (Dipotong per Tahap Berhasil):', 'Video Price (Charged per Completed Stage):')}
                 </div>
                 <div className="font-mono text-[14px] font-bold text-[var(--text-primary)]">
                   {currentCost} RMToken{' '}
@@ -612,18 +645,18 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
             <button
               type="submit"
               disabled={!!activeGeneratingJob}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--accent-amber)] px-6 text-[13.5px] font-bold text-[var(--accent-text)] shadow-lg shadow-[rgba(242,135,31,.2)] hover:brightness-105 disabled:opacity-50 cursor-pointer transition"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#4D5BAF] px-7 text-[13.5px] font-bold text-white shadow-lg shadow-[#4D5BAF]/25 hover:bg-[#3f4c9c] disabled:opacity-50 cursor-pointer transition"
             >
               {activeGeneratingJob ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>{t('Sedang Memproses di Server...', 'Processing on Server...')}</span>
+                  <span>{t('Sedang Membuat Video...', 'Creating Video...')}</span>
                 </>
               ) : (
                 <>
                   <WandSparkles className="h-4 w-4" />
                   <span>
-                    {t('Buat Video Sekarang', 'Generate Video Now')} ({currentCost} RMToken)
+                    {t('Buat Video Sekarang', 'Create Video Now')} ({currentCost} RMToken)
                   </span>
                 </>
               )}
@@ -631,23 +664,23 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
           </div>
         </form>
 
-        {/* Live Progress & Architecture Card */}
-        <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-5 sm:p-6 flex flex-col justify-between space-y-5">
+        {/* Live Progress Card */}
+        <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-5 sm:p-6 flex flex-col justify-between space-y-5">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--accent-amber)]">
-                {t('MONITOR PIPELINE SIDECAR', 'SIDECAR PIPELINE MONITOR')}
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#4D5BAF]">
+                {t('PROGRES PEMBUATAN VIDEO', 'VIDEO PRODUCTION PROGRESS')}
               </span>
-              <span className="rounded-full bg-[var(--success-bg)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--success)]">
-                claude/sonnet/4.6 · VoxCPM2
+              <span className="rounded-full bg-[var(--success-bg)] px-3 py-0.5 text-[11px] font-bold text-[var(--success)]">
+                {t('Otomatis', 'Automatic')}
               </span>
             </div>
 
             {activeGeneratingJob ? (
-              <div className="mt-5 rounded-xl border border-[var(--accent-amber)]/50 bg-[var(--accent-amber-bg)] p-4 space-y-3">
+              <div className="mt-5 rounded-2xl border border-[#4D5BAF]/30 bg-[#4D5BAF]/5 p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[12px] font-bold text-[var(--accent-amber)]">
-                    {t('SEDANG DIKERJAKAN SERVER', 'SERVER JOB IN PROGRESS')}
+                  <span className="text-[12px] font-bold text-[#4D5BAF]">
+                    {t('SEDANG MEMBUAT VIDEO ANDA', 'BUILDING YOUR VIDEO')}
                   </span>
                   <span className="font-mono text-[12px] font-bold">
                     {activeGeneratingJob.progress}%
@@ -656,58 +689,58 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                 <div className="text-[14px] font-semibold text-[var(--text-primary)]">
                   {activeGeneratingJob.topic}
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--bg-tertiary)]">
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-[var(--bg-tertiary)]">
                   <div
-                    className="h-full rounded-full bg-[var(--accent-amber)] transition-all duration-500"
+                    className="h-full rounded-full bg-[#4D5BAF] transition-all duration-500"
                     style={{ width: `${activeGeneratingJob.progress}%` }}
                   />
                 </div>
                 <p className="text-[12.5px] text-[var(--text-secondary)] flex items-center gap-2">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-[var(--accent-amber)]" />
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-[#4D5BAF]" />
                   {activeGeneratingJob.stageLabel}
                 </p>
               </div>
             ) : (
               <div className="mt-4 space-y-3">
                 <h3 className="font-display text-[16px] font-bold">
-                  {t('Tahap Pembuatan & Jaminan Saldo', 'Pipeline Stages & Token Hold Protection')}
+                  {t('Lima Langkah Otomatis dari Satu Topik', 'Five Automatic Steps from One Topic')}
                 </h3>
                 <p className="text-[12.5px] leading-relaxed text-[var(--text-muted)]">
                   {t(
-                    'Selama sidecar server aktif, seluruh proses berjalan di belakang layar. Anda bebas menutup tab browser dan memeriksa hasilnya di Riwayat.',
-                    'While the server sidecar is active, all stages run in the background. You can safely close the browser tab and inspect results in History.'
+                    'Anda cukup menuliskan topik di samping. Seluruh penulisan naskah, perekaman suara narator, pembuatan gambar, dan penyatuan video dikerjakan otomatis.',
+                    'Simply enter your topic on the left. Scriptwriting, voice recording, visual creation, and final video assembly happen automatically.'
                   )}
                 </p>
 
                 <ul className="space-y-2 pt-2 text-[12.5px]">
                   {[
                     {
-                      title: t('1. Riset Web & Penulisan Naskah', '1. Web Research & Scriptwriting'),
-                      detail: 'Gateway /v1/research + LLM Script Normalizer',
+                      title: t('1. Penulisan Naskah & Pembuka', '1. Scriptwriting & Hook'),
+                      detail: t('Otomatis', 'Automatic'),
                     },
                     {
-                      title: t('2. Susunan Adegan & Prompt Visual', '2. Scene Layout & Visual Prompts'),
-                      detail: t('Batas gambar otomatis sesuai durasi', 'Automatic scene count cap per tier'),
+                      title: t('2. Penyusunan Adegan demi Adegan', '2. Scene-by-Scene Layout'),
+                      detail: t('Sesuai durasi', 'Matched to length'),
                     },
                     {
-                      title: t('3. Sintesis Suara & Peniruan Timbre', '3. Voice Synthesis & Timbre Cloning'),
-                      detail: 'VoxCPM2 + ZipEnhancer 16kHz + FFmpeg atempo',
+                      title: t('3. Perekaman Suara Narator', '3. Narrator Voice Recording'),
+                      detail: t('Jernih & rata', 'Clear & balanced'),
                     },
                     {
-                      title: t('4. Penyelarasan Teks Per Kata', '4. Word-Level Karaoke Alignment'),
-                      detail: 'Stable-Whisper medium/small forced alignment',
+                      title: t('4. Penyelarasan Teks Menyala per Kata', '4. Word-by-Word Highlighted Text'),
+                      detail: t('Mengikuti suara', 'Synced to voice'),
                     },
                     {
-                      title: t('5. Render & Unggah Multipart R2', '5. Render & R2 Multipart Upload'),
-                      detail: 'Z-Image Turbo (T4x2) + FFmpeg + Presigned R2',
+                      title: t('5. Penyatuan Video Siap Unduh', '5. Final Video Ready to Download'),
+                      detail: 'MP4 / WebM HD',
                     },
                   ].map((st) => (
                     <li
                       key={st.title}
-                      className="flex items-start justify-between gap-2 rounded-xl border border-[var(--border-default)] bg-[var(--bg-secondary)]/60 px-3 py-2"
+                      className="flex items-center justify-between gap-2 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 py-2.5"
                     >
                       <span className="font-semibold text-[var(--text-primary)]">{st.title}</span>
-                      <span className="text-[11px] font-mono text-[var(--text-muted)] shrink-0">
+                      <span className="text-[11px] font-semibold text-[#4D5BAF] shrink-0">
                         {st.detail}
                       </span>
                     </li>
@@ -717,13 +750,13 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
             )}
           </div>
 
-          <div className="rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] p-3.5 text-[12px] text-[var(--text-muted)]">
+          <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-secondary)] p-3.5 text-[12px] text-[var(--text-muted)]">
             <span className="font-semibold text-[var(--text-primary)]">
-              {t('Info Penyimpanan:', 'Storage Info:')}
+              {t('Jaminan Saldo:', 'Balance Guarantee:')}
             </span>{' '}
             {t(
-              'Video yang selesai disimpan di Cloudflare R2 selama 7 hari (bisa diperpanjang dari Riwayat atau diunggah langsung ke YouTube/TikTok).',
-              'Completed videos are retained in Cloudflare R2 for 7 days (extendable from History or directly publishable to YouTube/TikTok).'
+              'Saldo RMToken hanya dipotong saat video selesai dibuat dan siap Anda unduh di Riwayat.',
+              'RMToken is only deducted when your video finishes and is ready to download in History.'
             )}
           </div>
         </div>
@@ -733,10 +766,10 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold">
-            {t('Riwayat Pembuatan Video', 'Video Generation History')} ({jobs.length})
+            {t('Riwayat Video Anda', 'Your Video History')} ({jobs.length})
           </h2>
           <span className="text-[12px] text-[var(--text-muted)]">
-            {t('Klik kartu video untuk memutar pratinjau', 'Click any video card to play preview')}
+            {t('Putar langsung atau unduh video yang sudah selesai', 'Play directly or download finished videos')}
           </span>
         </div>
 
@@ -744,15 +777,22 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
           {jobs.map((job) => (
             <div
               key={job.id}
-              className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-4 sm:p-5 flex flex-col justify-between gap-4"
+              className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-4 sm:p-5 flex flex-col justify-between gap-4"
             >
-              <div className="flex items-start gap-4">
-                {/* Thumbnail / Player */}
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                {/* Video Player / Thumbnail */}
                 <div
-                  className="relative w-28 sm:w-36 shrink-0 overflow-hidden rounded-xl bg-black border border-[var(--border-default)]"
-                  style={{ aspectRatio: '16 / 9' }}
+                  className="relative w-full sm:w-44 shrink-0 overflow-hidden rounded-2xl bg-black border border-[var(--border-default)]"
+                  style={{ aspectRatio: job.format === '9:16' && job.videoUrl ? '9 / 16' : '16 / 9', maxHeight: '260px' }}
                 >
-                  {playingJobId === job.id && job.youtubeId ? (
+                  {job.videoUrl ? (
+                    <video
+                      src={job.videoUrl}
+                      controls
+                      autoPlay={playingJobId === job.id}
+                      className="h-full w-full object-contain bg-black"
+                    />
+                  ) : playingJobId === job.id && job.youtubeId ? (
                     <iframe
                       className="absolute inset-0 h-full w-full"
                       src={`https://www.youtube-nocookie.com/embed/${job.youtubeId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
@@ -774,7 +814,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                         />
                       )}
                       <span className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-black shadow">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#4D5BAF] shadow">
                           <Play className="ml-0.5 h-4 w-4 fill-current" />
                         </span>
                       </span>
@@ -784,24 +824,36 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success-bg)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--success)]">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success-bg)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--success)]">
                       <CheckCircle2 className="h-3 w-3" />
                       {t('Selesai', 'Finished')}
                     </span>
-                    <span className="rounded-full border border-[var(--border-default)] px-2 py-0.5 text-[10.5px] font-semibold uppercase text-[var(--text-muted)]">
+                    <span className="rounded-full bg-[var(--bg-secondary)] px-2.5 py-0.5 text-[10.5px] font-semibold uppercase text-[var(--text-muted)]">
                       {job.mode} · {job.format}
                     </span>
-                    <span className="font-mono text-[11px] font-semibold text-[var(--accent-amber)]">
+                    <span className="font-mono text-[11px] font-bold text-[#4D5BAF]">
                       −{job.tokensUsed} RMToken
                     </span>
                   </div>
 
-                  <h3 className="mt-1.5 font-display text-[15px] font-bold leading-snug text-[var(--text-primary)]">
+                  <h3 className="mt-2 font-display text-[15.5px] font-bold leading-snug text-[var(--text-primary)]">
                     {job.topic}
                   </h3>
-                  <p className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-2">
+                  <p className="mt-1 text-[12px] text-[var(--text-muted)] line-clamp-3">
                     {job.scriptPreview}
                   </p>
+                  {job.hashtags && job.hashtags.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {job.hashtags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-[var(--bg-secondary)] px-2 py-0.5 text-[10.5px] font-medium text-[#4D5BAF]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -810,24 +862,37 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                   {job.createdAt} · {job.style}
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPlayingJobId(playingJobId === job.id ? null : job.id)}
-                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3 font-semibold text-[var(--text-primary)] hover:border-[var(--border-hover)] cursor-pointer"
-                  >
-                    <Play className="h-3.5 w-3.5 text-[var(--accent-amber)]" />
-                    {playingJobId === job.id ? t('Tutup', 'Close') : t('Putar', 'Play')}
-                  </button>
-                  {job.youtubeId && (
+                  {job.videoUrl ? (
                     <a
-                      href={`https://youtu.be/${job.youtubeId}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-[var(--accent-amber)] px-3 font-bold text-[var(--accent-text)] hover:brightness-105"
+                      href={job.videoUrl}
+                      download={`${job.topic.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40)}.webm`}
+                      className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#4D5BAF] px-4 font-bold text-white hover:bg-[#3f4c9c]"
                     >
-                      <Youtube className="h-3.5 w-3.5" />
-                      YouTube
+                      <Download className="h-3.5 w-3.5" />
+                      {t('Unduh Video', 'Download Video')}
                     </a>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setPlayingJobId(playingJobId === job.id ? null : job.id)}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-[var(--border-default)] bg-[var(--bg-secondary)] px-3.5 font-semibold text-[var(--text-primary)] cursor-pointer"
+                      >
+                        <Play className="h-3.5 w-3.5 text-[#4D5BAF]" />
+                        {playingJobId === job.id ? t('Tutup', 'Close') : t('Putar', 'Play')}
+                      </button>
+                      {job.youtubeId && (
+                        <a
+                          href={`https://youtu.be/${job.youtubeId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#4D5BAF] px-3.5 font-bold text-white"
+                        >
+                          <Youtube className="h-3.5 w-3.5" />
+                          YouTube
+                        </a>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

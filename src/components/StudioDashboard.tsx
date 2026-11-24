@@ -128,7 +128,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
   >([
     {
       role: 'assistant',
-      text: 'Halo! Saya Direktur Kreatif AI ReelMotion (Persona: Content Strategist & Copywriter). Anda bisa meminta riset tren TikTok/YouTube, naskah hook 3 detik, atau membuat dokumen penawaran.',
+      text: 'Halo! Saya Asisten Penulis Naskah ReelMotion. Anda bisa meminta ide topik video viral, kalimat pembuka 3 detik (hook), atau naskah iklan produk siap pakai.',
     },
   ]);
 
@@ -139,29 +139,25 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
     setMobileSidebarOpen(false);
   };
 
-  // Sovereign 10 Icon-Pill Sidebar Items matching the Figma template
+  // Sovereign Icon-Pill Sidebar Items (User-focused, zero technical AI settings)
   const navItems: {
     id: StudioTab;
     label: string;
     icon: React.ReactNode;
-    adminOnly?: boolean;
   }[] = [
-    { id: 'dashboard', label: t('Beranda Sovereign', 'Sovereign Overview'), icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
-    { id: 'auto-video', label: t('Auto Konten Studio', 'Auto Content Studio'), icon: <Clapperboard className="h-[18px] w-[18px]" /> },
+    { id: 'dashboard', label: t('Beranda', 'Dashboard'), icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
+    { id: 'auto-video', label: t('Buat Video', 'Create Video'), icon: <Clapperboard className="h-[18px] w-[18px]" /> },
     { id: 'my-tokens', label: t('Saldo RMToken', 'Token Wallet'), icon: <Coins className="h-[18px] w-[18px]" /> },
-    { id: 'payment', label: t('Isi Saldo / Invoice', 'Top Up / Invoice'), icon: <CreditCard className="h-[18px] w-[18px]" /> },
-    { id: 'token-gratis', label: t('Ajak Teman & Voucher', 'Referrals & Vouchers'), icon: <Users className="h-[18px] w-[18px]" /> },
+    { id: 'payment', label: t('Isi Saldo', 'Top Up'), icon: <CreditCard className="h-[18px] w-[18px]" /> },
+    { id: 'token-gratis', label: t('Token Gratis', 'Free Tokens'), icon: <Users className="h-[18px] w-[18px]" /> },
     { id: 'galeri', label: t('Galeri Video', 'Video Gallery'), icon: <Film className="h-[18px] w-[18px]" /> },
-    { id: 'my-sosmed', label: t('Tautan Media Sosial', 'Social Links'), icon: <Share2 className="h-[18px] w-[18px]" /> },
-    { id: 'etalase', label: t('Analitik & Etalase', 'Analytics & Watch'), icon: <Sparkles className="h-[18px] w-[18px]" /> },
-    { id: 'auto-iklan', label: 'Auto Iklan Motion', icon: <Megaphone className="h-[18px] w-[18px]" />, adminOnly: true },
-    { id: 'karyawan-chat', label: 'AI Staff Chat', icon: <Bot className="h-[18px] w-[18px]" />, adminOnly: true },
-    { id: 'gpu-jobs', label: 'GPU Jobs (VoxCPM2)', icon: <Cpu className="h-[18px] w-[18px]" />, adminOnly: true },
-    { id: 'agentic', label: 'Agentic Studio', icon: <Layers className="h-[18px] w-[18px]" />, adminOnly: true },
-    { id: 'admin-panel', label: t('Setelan & Admin', 'Settings & Admin'), icon: <Settings className="h-[18px] w-[18px]" /> },
+    { id: 'my-sosmed', label: t('Media Sosial', 'Social Media'), icon: <Share2 className="h-[18px] w-[18px]" /> },
+    { id: 'etalase', label: t('Etalase Tonton', 'Watch & Earn'), icon: <Sparkles className="h-[18px] w-[18px]" /> },
+    { id: 'auto-iklan', label: t('Template Iklan', 'Ad Templates'), icon: <Megaphone className="h-[18px] w-[18px]" /> },
+    { id: 'karyawan-chat', label: t('Asisten Naskah', 'Script Assistant'), icon: <Bot className="h-[18px] w-[18px]" /> },
   ];
 
-  const visibleNav = navItems.filter((item) => !item.adminOnly || isAdmin);
+  const visibleNav = navItems;
 
   // Build rows for the Sovereign "Recent Files" table combining user's video jobs + Sovereign style columns
   const sovereignTableRows = [
@@ -244,22 +240,37 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
     }
   };
 
-  const handleChatSend = (e: React.FormEvent) => {
+  const handleChatSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
     const msg = chatInput.trim();
     setChatHistory((prev) => [...prev, { role: 'user', text: msg }]);
     setChatInput('');
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg, lang }),
+      });
+      const data = await res.json();
       setChatHistory((prev) => [
         ...prev,
         {
           role: 'assistant',
-          tool: 'web_search · claude/sonnet/4.6',
-          text: `Berikut rancangan hook & struktur naskah untuk "${msg}":\n\n1. Hook (0–3 dtk): Pernyataan kontras yang mematahkan asumsi penonton.\n2. Isi Utama (3–22 dtk): 3 fakta konkret berbasis data riset kredibilitas tinggi.\n3. Ajakan Penutup (22–30 dtk): Kalimat CTA singkat ke kolom komentar atau link di bio.\n\nKlik menu "Auto Konten" untuk langsung mengubah naskah ini menjadi video 9:16!`,
+          text:
+            data.reply ||
+            `Berikut rancangan naskah untuk "${msg}". Klik menu "Buat Video" untuk langsung menjadikannya video siap tayang!`,
         },
       ]);
-    }, 600);
+    } catch {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          text: `Berikut rancangan hook & struktur naskah untuk "${msg}":\n\n1. Pembuka (0–3 dtk): Kalimat tajam yang menahan perhatian penonton.\n2. Isi Utama (3–22 dtk): 3 poin utama yang jelas dan ringkas.\n3. Penutup (22–30 dtk): Ajakan singkat di akhir video.`,
+        },
+      ]);
+    }
   };
 
   return (
@@ -474,7 +485,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                     {
                       title: t('AudioBook & Clipper', 'AudioBook & Clipper'),
                       subtitle: '28 Files · 32 MB',
-                      tag: 'VoxCPM2',
+                      tag: t('Narasi & Klip', 'Narration & Clips'),
                       mode: 'audiobook' as AutoContentMode,
                       fmt: '16:9' as const,
                     },
@@ -1478,15 +1489,12 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
               <div className="border-b border-[var(--border-default)] pb-4 flex items-center justify-between">
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-widest text-[#4D5BAF]">
-                    KARYAWAN CHAT · PERSONA SKILL ROUTER
+                    {t('ASISTEN PENULIS NASKAH', 'SCRIPTWRITING ASSISTANT')}
                   </div>
                   <h2 className="mt-1 font-display text-2xl font-bold">
-                    {t('Staf AI & Direktur Naskah', 'AI Staff & Script Director')}
+                    {t('Diskusi Ide & Naskah Video', 'Brainstorm Video Ideas & Scripts')}
                   </h2>
                 </div>
-                <span className="rounded-full bg-[var(--bg-surface)] border border-[var(--border-default)] px-3.5 py-1 font-mono text-[11.5px] text-[#4D5BAF]">
-                  claude/sonnet/4.6 · ```tool
-                </span>
               </div>
 
               <div className="rounded-3xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-5 space-y-4">

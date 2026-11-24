@@ -11,10 +11,7 @@ export type StudioTab =
   | 'etalase'
   | 'my-sosmed'
   | 'auto-iklan'
-  | 'karyawan-chat'
-  | 'gpu-jobs'
-  | 'agentic'
-  | 'admin-panel';
+  | 'karyawan-chat';
 
 export type AutoContentMode = 'video' | 'motion' | 'audiobook' | 'clipper';
 
@@ -32,6 +29,9 @@ export interface VideoJob {
   createdAt: string;
   tokensUsed: number;
   youtubeId?: string;
+  videoUrl?: string;
+  caption?: string;
+  hashtags?: string[];
   scriptPreview?: string;
   scenesCount?: number;
 }
@@ -49,7 +49,7 @@ export interface TokenLedgerEntry {
 export const SHOWCASE_VIDEOS = [
   {
     id: 'm169',
-    title: 'Motion Video — Explainer & Brand Ad',
+    title: 'Motion Video — Penjelasan & Iklan Brand',
     category: 'autovideo169',
     ratio: '16:9' as const,
     youtubeId: 'C3aS6HSPZsw',
@@ -58,7 +58,7 @@ export const SHOWCASE_VIDEOS = [
   },
   {
     id: 'f169',
-    title: 'Faceless Video — Documentary & History',
+    title: 'Faceless Video — Dokumenter & Sejarah',
     category: 'autovideo169',
     ratio: '16:9' as const,
     youtubeId: 'BpKG9cGpx0I',
@@ -92,12 +92,12 @@ export const INITIAL_JOBS: VideoJob[] = [
     mode: 'video',
     format: '9:16',
     tier: 'short',
-    style: 'Cinematic Nusantara Realism',
-    voice: 'Arjuna — Narator Dokumenter (VoxCPM2)',
+    style: 'Sinematik Nusantara',
+    voice: 'Arjuna — Suara Dokumenter',
     status: 'done',
     progress: 100,
     stageLabel: 'Video siap!',
-    createdAt: '2026-11-24 21:40',
+    createdAt: '24 Nov 2026, 21:40',
     tokensUsed: 3,
     youtubeId: 't0h2rd4Rl6k',
     scenesCount: 14,
@@ -110,12 +110,12 @@ export const INITIAL_JOBS: VideoJob[] = [
     mode: 'motion',
     format: '9:16',
     tier: 'short',
-    style: 'Warm Obsidian Kinetic Ad',
-    voice: 'Kirana — Energetic Commercial',
+    style: 'Animasi Iklan Produk',
+    voice: 'Kirana — Suara Komersial',
     status: 'done',
     progress: 100,
-    stageLabel: 'Video Motion selesai!',
-    createdAt: '2026-11-24 20:15',
+    stageLabel: 'Video selesai!',
+    createdAt: '24 Nov 2026, 20:15',
     tokensUsed: 3,
     youtubeId: 'wLf1NwaNijM',
     scenesCount: 8,
@@ -128,17 +128,17 @@ export const INITIAL_JOBS: VideoJob[] = [
     mode: 'video',
     format: '16:9',
     tier: 'medium',
-    style: 'Historical Oil & Chiaroscuro',
-    voice: 'Bima — Deep Baritone Storyteller',
+    style: 'Lukisan Sejarah Klasik',
+    voice: 'Bima — Bercerita Mendalam',
     status: 'done',
     progress: 100,
-    stageLabel: 'YouTube: terunggah - https://youtu.be/BpKG9cGpx0I',
-    createdAt: '2026-11-24 18:02',
+    stageLabel: 'Video siap!',
+    createdAt: '24 Nov 2026, 18:02',
     tokensUsed: 5,
     youtubeId: 'BpKG9cGpx0I',
     scenesCount: 42,
     scriptPreview:
-      'Bab 1: Jejak Sangiran. Di lembah Bengawan Solo, lapisan tanah purba menyimpan rahasia migrasi Homo erectus yang mengubah peta evolusi dunia...',
+      'Bab 1: Jejak Sangiran. Di lembah Bengawan Solo, lapisan tanah purba menyimpan rahasia migrasi manusia purba yang mengubah peta sejarah dunia...',
   },
   {
     id: 'job-audiobook-ep1',
@@ -146,12 +146,12 @@ export const INITIAL_JOBS: VideoJob[] = [
     mode: 'audiobook',
     format: '16:9',
     tier: 'medium',
-    style: 'Skin Bara — Karaoke Word Highlight',
-    voice: 'Saraswati — Warm Audiobook Narrator',
+    style: 'Tema Bara — Sorot Kata',
+    voice: 'Saraswati — Narator Buku',
     status: 'done',
     progress: 100,
     stageLabel: 'Episode selesai!',
-    createdAt: '2026-11-23 22:18',
+    createdAt: '23 Nov 2026, 22:18',
     tokensUsed: 3,
     youtubeId: 'C3aS6HSPZsw',
     scenesCount: 1,
@@ -168,7 +168,7 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
     delta: -3,
     balanceAfter: 147,
     createdAt: '24 Nov 2026, 21:40',
-    stage: 'Naskah + Narasi + 14 Gambar + Render 9:16',
+    stage: 'Naskah + Narasi + Gambar + Penyatuan Video 9:16',
   },
   {
     id: 'tx-104',
@@ -177,7 +177,7 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
     delta: -3,
     balanceAfter: 150,
     createdAt: '24 Nov 2026, 20:15',
-    stage: 'Motion Graphic 30 dtk + Musik CC0',
+    stage: 'Animasi Motion 30 dtk + Musik Latar',
   },
   {
     id: 'tx-103',
@@ -186,7 +186,7 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
     delta: 150,
     balanceAfter: 153,
     createdAt: '24 Nov 2026, 17:30',
-    stage: 'QRIS Pakasir Otomatis Lunas (Rp50.000)',
+    stage: 'QRIS Otomatis Lunas (Rp50.000)',
   },
   {
     id: 'tx-102',
@@ -195,7 +195,7 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
     delta: -3,
     balanceAfter: 3,
     createdAt: '23 Nov 2026, 22:18',
-    stage: 'Narasi VoxCPM2 + Word Alignment + Render',
+    stage: 'Narasi Suara + Sorot Kata + Penyatuan Episode',
   },
   {
     id: 'tx-101',
@@ -209,24 +209,24 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
 ];
 
 export const IMAGE_STYLES = [
-  'Cinematic Nusantara Realism',
-  'Dark Historical Chiaroscuro',
-  'Ghibli Warm Anime Illustration',
-  'Cyberpunk Neon Metropolis',
-  '3D Pixar Stylized Render',
-  'Vintage 1920s Archival Film',
-  'Epic Fantasy Oil Painting',
-  'Minimalist Editorial Vector',
-  'Comic Book Ink & Halftone',
-  'Hyper-Realistic Macro Nature',
+  'Sinematik Nusantara',
+  'Lukisan Sejarah Klasik',
+  'Ilustrasi Anime Hangat',
+  'Kota Futuristik Neon',
+  'Animasi 3D Modern',
+  'Film Dokumenter Arsip',
+  'Lukisan Cat Minyak Epik',
+  'Ilustrasi Editorial Bersih',
+  'Komik & Tinta Klasik',
+  'Fotografi Alam Realistis',
 ];
 
 export const VOICE_LIBRARY = [
-  { id: 'v1', name: 'Arjuna — Narator Dokumenter (ID)', lang: 'id', sampleText: 'Ribuan batu vulkanik disusun presisi tanpa semen.' },
-  { id: 'v2', name: 'Kirana — Energetic Commercial (ID)', lang: 'id', sampleText: 'Promo spesial hari ini, pesan langsung lewat tautan di bio!' },
-  { id: 'v3', name: 'Bima — Deep Baritone Storyteller (ID)', lang: 'id', sampleText: 'Di balik kabut sejarah, tersimpan kisah yang jarang diceritakan.' },
-  { id: 'v4', name: 'Saraswati — Warm Audiobook Narrator (ID)', lang: 'id', sampleText: 'Bab pertama dimulai ketika kereta malam tiba di stasiun tua.' },
-  { id: 'v5', name: 'Marcus — Documentary Narrator (EN)', lang: 'en', sampleText: 'Across centuries of human history, few monuments rival this engineering feat.' },
+  { id: 'v1', name: 'Arjuna — Suara Dokumenter (ID)', lang: 'id' },
+  { id: 'v2', name: 'Kirana — Suara Komersial & Cerah (ID)', lang: 'id' },
+  { id: 'v3', name: 'Bima — Suara Bercerita Mendalam (ID)', lang: 'id' },
+  { id: 'v4', name: 'Saraswati — Suara Narator Buku (ID)', lang: 'id' },
+  { id: 'v5', name: 'Marcus — Documentary Narrator (EN)', lang: 'en' },
 ];
 
 export const MOTION_GENRES = [
