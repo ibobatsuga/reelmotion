@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id" class="dark" data-theme="charcoal">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReelMotion - Buat Video AI Otomatis untuk TikTok, Reels &amp; YouTube</title>
+    <meta name="description" content="Buat video AI otomatis dari satu topik: video faceless bernarasi, animasi motion graphic, audiobook, dan klip pendek dari YouTube. Daftar gratis pakai akun Google." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f2871f" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ReelMotion" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:title" content="ReelMotion - Buat Video AI Otomatis untuk TikTok, Reels &amp; YouTube" />
+    <meta property="og:description" content="Buat video AI otomatis dari satu topik: video faceless bernarasi, animasi motion graphic, audiobook, dan klip pendek dari YouTube. Daftar gratis pakai akun Google." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ReelMotion - Buat Video AI Otomatis untuk TikTok, Reels &amp; YouTube" />
+    <meta name="twitter:description" content="Buat video AI otomatis dari satu topik: video faceless bernarasi, animasi motion graphic, audiobook, dan klip pendek dari YouTube. Daftar gratis pakai akun Google." />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "FLUXY Digital Studio",
+            "brand": "ReelMotion"
+          },
+          {
+            "@type": "WebApplication",
+            "name": "ReelMotion",
+            "description": "Buat video AI otomatis dari satu topik: video faceless bernarasi, animasi motion graphic, audiobook, dan klip pendek dari YouTube. Daftar gratis pakai akun Google.",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "Web",
+            "inLanguage": ["id", "en"]
+          }
+        ]
+      }
+    </script>
+    <script>
+      try {
+        var d = document.documentElement;
+        if (localStorage.getItem("reelmotion.theme") === "light") {
+          d.classList.remove("dark");
+          d.removeAttribute("data-theme");
+        } else {
+          d.classList.add("dark");
+          d.setAttribute("data-theme", "charcoal");
+        }
+      } catch (e) {
+        var d2 = document.documentElement;
+        d2.classList.add("dark");
+        d2.setAttribute("data-theme", "charcoal");
+      }
+    </script>
+  </head>
+  <body class="transition-colors duration-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #f7f6f3;
+  --bg-secondary: #f0efec;
+  --bg-card: #ffffff;
+  --bg-input: #f0efec;
+  --bg-tertiary: #eae9e5;
+  --text-primary: #18181a;
+  --text-secondary: #18181ab8;
+  --text-muted: #18181a99;
+  --text-faint: #18181a66;
+  --border-default: #14141417;
+  --border-hover: #14141438;
+  --accent-amber: #f2871f;
+  --accent-amber-bg: #f2871f21;
+  --accent-text: #1a1006;
+  --success: #1f9d63;
+  --success-bg: #1f9d631a;
+  --danger: #d8443c;
+  --danger-bg: #d8443c1a;
+}
+
+[data-theme="charcoal"],
+.dark {
+  --bg-primary: #0d0e10;
+  --bg-secondary: #1a1b1e;
+  --bg-card: #17181b;
+  --bg-input: #1a1b1e;
+  --bg-tertiary: #212226;
+  --text-primary: #f3f2ef;
+  --text-secondary: #f3f2efbf;
+  --text-muted: #f3f2ef94;
+  --text-faint: #f3f2ef61;
+  --border-default: #ffffff17;
+  --border-hover: #ffffff38;
+  --accent-amber: #f2871f;
+  --accent-amber-bg: #f2871f29;
+  --accent-text: #1a1006;
+  --success: #3ddc97;
+  --success-bg: #3ddc9724;
+  --danger: #ff6b6b;
+  --danger-bg: #ff6b6b1f;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbar matching charcoal theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 9999px;
+}

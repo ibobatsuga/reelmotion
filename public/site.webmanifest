@@ -1,0 +1,17 @@
+{
+  "name": "ReelMotion",
+  "short_name": "ReelMotion",
+  "description": "Buat video AI otomatis dari satu topik: video faceless bernarasi, animasi motion graphic, audiobook, dan klip pendek dari YouTube. Daftar gratis pakai akun Google.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#141412",
+  "theme_color": "#f2871f",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
