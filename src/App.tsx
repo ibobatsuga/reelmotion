@@ -193,9 +193,7 @@ export function App() {
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#4D5BAF] text-white shadow-md shadow-[#4D5BAF]/25">
-                <Sparkles className="h-5 w-5" />
-              </div>
+              <img src="/logo-mark.png" alt="ReelMotion" className="h-10 w-10 object-contain" />
               <div>
                 <div className="font-display text-lg font-bold leading-none text-[#181924]">
                   ReelMotion

@@ -4,28 +4,53 @@
 
 :root,
 [data-theme="sovereign"] {
-  --sov-canvas: #E9ECF8;
-  --sov-card: #F4F5FF;
-  --sov-white: #FFFFFF;
-  --sov-primary: #4D5BAF;
-  --sov-primary-hover: #3F4C9C;
-  --sov-primary-soft: #E0E4F6;
-  --sov-text-main: #181924;
-  --sov-text-sub: #6C7086;
-  --sov-text-muted: #9397AD;
-  --sov-divider: #E2E5F3;
-  --sov-valid-bg: #F0FCED;
-  --sov-valid-text: #56B847;
-  --sov-invalid-bg: #FBECE6;
-  --sov-invalid-text: #E86E4B;
-  --sov-orange: #FFA143;
-  --sov-yellow: #FFD12E;
-  --sov-teal: #11C6C2;
+  --bg-primary: #E9ECF8;
+  --bg-secondary: #F4F5FF;
+  --bg-card: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-input: #F4F5FF;
+  --bg-tertiary: #DCE1F5;
+  --text-primary: #181924;
+  --text-secondary: #494D66;
+  --text-muted: #6C7086;
+  --text-faint: #9397AD;
+  --border-default: rgba(77, 91, 175, 0.14);
+  --border-hover: rgba(77, 91, 175, 0.34);
+  --accent-amber: #4D5BAF;
+  --accent-amber-bg: rgba(77, 91, 175, 0.12);
+  --accent-text: #FFFFFF;
+  --success: #56B847;
+  --success-bg: #F0FCED;
+  --danger: #E86E4B;
+  --danger-bg: #FBECE6;
+}
+
+.dark,
+[data-theme="sovereign-dark"] {
+  --bg-primary: #121422;
+  --bg-secondary: #1A1D30;
+  --bg-card: #21253D;
+  --bg-surface: #21253D;
+  --bg-input: #1A1D30;
+  --bg-tertiary: #2C3150;
+  --text-primary: #F4F5FF;
+  --text-secondary: #C6CAE8;
+  --text-muted: #9298C0;
+  --text-faint: #676C94;
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(113, 124, 191, 0.42);
+  --accent-amber: #5E6CC7;
+  --accent-amber-bg: rgba(94, 108, 199, 0.22);
+  --accent-text: #FFFFFF;
+  --success: #68D355;
+  --success-bg: rgba(104, 211, 85, 0.16);
+  --danger: #FF7E5F;
+  --danger-bg: rgba(255, 126, 95, 0.16);
 }
 
 body {
-  background-color: var(--sov-canvas);
-  color: var(--sov-text-main);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: "Mona Sans", "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   margin: 0;
@@ -34,7 +59,7 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -43,13 +68,7 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Segmented circular ring mask for Sovereign Storage Usage 4-quadrant rings */
-.sovereign-segmented-ring {
-  position: relative;
-  border-radius: 9999px;
+  animation: fadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 ::-webkit-scrollbar {
@@ -60,6 +79,6 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(77, 91, 175, 0.22);
+  background: rgba(77, 91, 175, 0.25);
   border-radius: 9999px;
 }
