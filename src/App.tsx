@@ -176,41 +176,43 @@ export function App() {
         />
       )}
 
-      {/* Google / Email Quick Sign-In Modal */}
+      {/* Google / Email Quick Sign-In Modal in Pure Sovereign UI */}
       {showAuthModal && (
         <div
           role="dialog"
           aria-label="Masuk ke ReelMotion"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#181924]/50 backdrop-blur-sm p-4"
         >
-          <div className="relative w-full max-w-md rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-6 sm:p-7 shadow-2xl animate-fade-in">
+          <div className="relative w-full max-w-md rounded-[28px] bg-[#F4F5FF] p-7 shadow-2xl animate-fade-in">
             <button
               onClick={() => setShowAuthModal(false)}
               aria-label="Tutup"
-              className="absolute right-4 top-4 rounded-lg p-1.5 text-[var(--text-muted)] hover:bg-[var(--bg-secondary)] cursor-pointer"
+              className="absolute right-5 top-5 h-9 w-9 rounded-full bg-white flex items-center justify-center text-[#6C7086] hover:text-[#181924] cursor-pointer"
             >
               <X className="h-4 w-4" />
             </button>
 
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--accent-amber)] text-[16px] font-extrabold text-[var(--accent-text)]">
-                R
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#4D5BAF] text-white shadow-md shadow-[#4D5BAF]/25">
+                <Sparkles className="h-5 w-5" />
               </div>
               <div>
-                <div className="font-display text-lg font-bold leading-none">ReelMotion</div>
-                <div className="mt-0.5 text-[11.5px] text-[var(--text-muted)]">
-                  {t('Studio Konten AI Otomatis', 'Automated AI Content Studio')}
+                <div className="font-display text-lg font-bold leading-none text-[#181924]">
+                  ReelMotion
+                </div>
+                <div className="mt-1 text-[12px] text-[#6C7086]">
+                  {t('Studio Video & Konten Otomatis', 'Automated Video & Content Studio')}
                 </div>
               </div>
             </div>
 
-            <h2 className="mt-5 font-display text-xl font-bold">
+            <h2 className="mt-5 font-display text-xl font-bold text-[#181924]">
               {t('Masuk atau daftar akun baru', 'Sign in or create a new account')}
             </h2>
-            <p className="mt-1 text-[13px] text-[var(--text-muted)]">
+            <p className="mt-1 text-[13px] text-[#6C7086]">
               {t(
-                'Akun baru otomatis mendapatkan bonus 6 RMToken gratis untuk langsung mencoba studio.',
-                'New accounts automatically receive 6 free RMTokens to try the studio right away.'
+                'Akun baru otomatis mendapatkan bonus 6 RMToken gratis untuk langsung membuat video.',
+                'New accounts automatically receive 6 free RMTokens to create videos right away.'
               )}
             </p>
 
@@ -218,7 +220,7 @@ export function App() {
             <button
               type="button"
               onClick={() => handleCompleteSignIn()}
-              className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--bg-secondary)] px-4 text-[13.5px] font-bold text-[var(--text-primary)] hover:border-[var(--accent-amber)] cursor-pointer transition"
+              className="mt-5 flex h-11 w-full items-center justify-center gap-3 rounded-full bg-white px-5 text-[13.5px] font-bold text-[#181924] shadow-sm hover:text-[#4D5BAF] cursor-pointer transition"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -241,51 +243,51 @@ export function App() {
               <span>{t('Lanjutkan dengan Akun Google', 'Continue with Google Account')}</span>
             </button>
 
-            <div className="my-4 flex items-center gap-3 text-[11px] uppercase tracking-wider text-[var(--text-faint)]">
-              <span className="h-px flex-1 bg-[var(--border-default)]" />
+            <div className="my-4 flex items-center gap-3 text-[11px] uppercase tracking-wider text-[#9397AD]">
+              <span className="h-px flex-1 bg-[#E2E5F3]" />
               <span>{t('atau masuk instan studio', 'or instant studio access')}</span>
-              <span className="h-px flex-1 bg-[var(--border-default)]" />
+              <span className="h-px flex-1 bg-[#E2E5F3]" />
             </div>
 
             <form onSubmit={handleCompleteSignIn} className="space-y-3">
               <div>
-                <label className="block text-[12px] font-semibold text-[var(--text-secondary)] mb-1">
+                <label className="block text-[12px] font-bold text-[#181924] mb-1">
                   {t('Nama Kreator', 'Creator Name')}
                 </label>
                 <input
                   type="text"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3.5 py-2 text-[13px] focus:border-[var(--accent-amber)] focus:outline-none"
+                  className="w-full h-11 rounded-full bg-white px-4 text-[13px] text-[#181924] focus:outline-none focus:ring-2 focus:ring-[#4D5BAF]"
                 />
               </div>
               <div>
-                <label className="block text-[12px] font-semibold text-[var(--text-secondary)] mb-1">
+                <label className="block text-[12px] font-bold text-[#181924] mb-1">
                   Email
                 </label>
                 <input
                   type="email"
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
-                  className="w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-input)] px-3.5 py-2 text-[13px] focus:border-[var(--accent-amber)] focus:outline-none"
+                  className="w-full h-11 rounded-full bg-white px-4 text-[13px] text-[#181924] focus:outline-none focus:ring-2 focus:ring-[#4D5BAF]"
                 />
               </div>
 
               <button
                 type="submit"
-                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent-amber)] text-[13.5px] font-bold text-[var(--accent-text)] hover:brightness-105 cursor-pointer transition"
+                className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#4D5BAF] text-[13.5px] font-bold text-white shadow-md shadow-[#4D5BAF]/25 hover:bg-[#3f4c9c] cursor-pointer transition"
               >
                 <span>{t('Masuk ke ReelMotion Studio', 'Enter ReelMotion Studio')}</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
 
-            <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[var(--accent-amber-bg)] px-3 py-2 text-[12px] font-medium text-[var(--accent-amber)]">
+            <div className="mt-4 flex items-center justify-center gap-2 rounded-full bg-[#F0FCED] px-4 py-2 text-[12px] font-bold text-[#56B847]">
               <Gift className="h-4 w-4 shrink-0" />
               <span>
                 {t(
-                  'Saldo demo 147 RMToken siap dipakai di dalam Studio',
-                  '147 RMToken demo balance pre-loaded inside Studio'
+                  'Saldo 147 RMToken siap dipakai di dalam Studio',
+                  '147 RMToken balance ready inside Studio'
                 )}
               </span>
             </div>
