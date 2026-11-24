@@ -87,8 +87,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     {
       q: t('Bagaimana cara membayar?', 'How do I pay?'),
       a: t(
-        'Anda cukup membeli paket RMToken lewat QRIS otomatis atau transfer, tanpa langganan bulanan. Saldo token tidak memiliki masa kedaluwarsa dan bisa dipakai untuk semua alat (Faceless, Motion, AudioBook, AutoClipper).',
-        'Simply top up an RMToken package via instant QRIS or transfer, with no monthly subscription. Token balances never expire and work across all tools (Faceless, Motion, AudioBook, AutoClipper).'
+        'Anda cukup membeli paket Credit lewat QRIS otomatis atau transfer, tanpa langganan bulanan. Saldo credit tidak memiliki masa kedaluwarsa dan bisa dipakai untuk semua alat (Faceless, Motion, AudioBook, AutoClipper).',
+        'Simply top up an Credit package via instant QRIS or transfer, with no monthly subscription. Credit balances never expire and work across all tools (Faceless, Motion, AudioBook, AutoClipper).'
       ),
     },
     {
@@ -97,8 +97,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         'What if video creation fails halfway through?'
       ),
       a: t(
-        'Saldo RMToken hanya dipotong untuk tahap yang benar-benar berhasil. Bila tahap penyatuan gagal, token untuk tahap tersebut otomatis dilepas kembali ke saldo Anda dan Anda bisa melanjutkan dari Riwayat.',
-        'RMToken is only deducted for stages that actually succeed. If rendering fails, the held tokens for that stage are automatically released back to your balance and you can resume from History.'
+        'Saldo Credit hanya dipotong untuk tahap yang benar-benar berhasil. Bila tahap penyatuan gagal, credit untuk tahap tersebut otomatis dilepas kembali ke saldo Anda dan Anda bisa melanjutkan dari Riwayat.',
+        'Credit is only deducted for stages that actually succeed. If rendering fails, the held credits for that stage are automatically released back to your balance and you can resume from History.'
       ),
     },
     {
@@ -296,7 +296,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-amber)]/30 bg-[var(--bg-card)] px-3.5 py-1.5 text-[12px] font-semibold text-[var(--text-primary)] shadow-sm cursor-pointer hover:border-[var(--accent-amber)] transition"
             >
               <Gift className="h-3.5 w-3.5 text-[#FFA143]" />
-              {t('Gratis 6 RMToken untuk akun baru', 'Free 6 RMToken for new accounts')}
+              {t('Gratis 6 Credit untuk akun baru', 'Free 6 Credit for new accounts')}
             </button>
           </div>
 
@@ -859,7 +859,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
             <div className="text-[12px] font-bold tracking-[0.18em] text-[var(--accent-amber)]">
-              RMTOKEN
+              CREDIT
             </div>
             <h2 className="mt-3 font-display text-[1.75rem] md:text-4xl font-bold tracking-tight">
               {t('Bayar sesuai yang benar-benar jadi', 'Pay only for what actually finishes')}
@@ -867,7 +867,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <p className="mt-4 text-[15px] leading-relaxed text-[var(--text-muted)]">
               {t(
                 'Satu saldo untuk semua alat. Harga tiap video terlihat sebelum Anda menekan tombol, dan dipotong per tahap yang berhasil - tahap yang gagal tidak ditagih.',
-                'One balance across all tools. The token cost of each video is shown upfront before you press start, and deducted per completed stage - failed stages are never charged.'
+                'One balance across all tools. The credit cost of each video is shown upfront before you press start, and deducted per completed stage - failed stages are never charged.'
               )}
             </p>
           </div>
@@ -880,8 +880,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </h3>
               <p className="mt-1.5 text-[13px] text-[var(--text-muted)]">
                 {t(
-                  'Lihat berapa RMToken yang dibutuhkan sebelum mulai.',
-                  'See exactly how many RMTokens are required before starting.'
+                  'Lihat berapa Credit yang dibutuhkan sebelum mulai.',
+                  'See exactly how many Credits are required before starting.'
                 )}
               </p>
             </div>
@@ -906,8 +906,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </h3>
               <p className="mt-1.5 text-[13px] text-[var(--text-muted)]">
                 {t(
-                  'Setiap token yang masuk dan terpakai tercatat dan bisa Anda periksa.',
-                  'Every token added or spent is recorded in your auditable wallet history.'
+                  'Setiap credit yang masuk dan terpakai tercatat dan bisa Anda periksa.',
+                  'Every credit added or spent is recorded in your auditable wallet history.'
                 )}
               </p>
             </div>
@@ -935,7 +935,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               )}
             </p>
             <p className="mt-2 inline-block rounded-full border border-[var(--border-default)] bg-[var(--bg-card)] px-3.5 py-1 text-[12.5px] font-mono font-semibold text-[var(--accent-amber)]">
-              1 RMToken ≈ Rp1.000
+              1 Credit ≈ Rp1.000
             </p>
           </div>
 
@@ -946,8 +946,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Gift className="h-5 w-5 shrink-0 text-[#FFA143] mt-0.5" />
                 <p className="text-[13.5px] font-medium text-[var(--text-primary)]">
                   {t(
-                    'Akun baru dapat 6 RMToken gratis setelah verifikasi WhatsApp - cukup untuk 2 video vertikal pendek.',
-                    'New accounts get 6 free RMTokens after WhatsApp verification - enough for 2 short vertical videos.'
+                    'Akun baru dapat 6 Credit gratis setelah verifikasi WhatsApp - cukup untuk 2 video vertikal pendek.',
+                    'New accounts get 6 free Credits after WhatsApp verification - enough for 2 short vertical videos.'
                   )}
                 </p>
               </div>
@@ -965,12 +965,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Sparkles className="h-5 w-5 shrink-0 text-[var(--success)] mt-0.5" />
                 <div>
                   <div className="text-[12px] font-bold uppercase tracking-wider text-[var(--success)]">
-                    {t('Promo sedang berlaku — Promo X3 Token', 'Active Promo — 3X Token Bonus')}
+                    {t('Promo sedang berlaku — Promo X3 Credit', 'Active Promo — 3X Credit Bonus')}
                   </div>
                   <p className="mt-0.5 text-[13px] text-[var(--text-primary)]">
                     {t(
-                      'Bonus +200% setiap beli paket 20 RMToken, 50 RMToken, atau 100 RMToken',
-                      '+200% bonus tokens on every 20, 50, or 100 RMToken package purchase'
+                      'Bonus +200% setiap beli paket 20 Credit, 50 Credit, atau 100 Credit',
+                      '+200% bonus credits on every 20, 50, or 100 Credit package purchase'
                     )}
                   </p>
                 </div>
@@ -997,15 +997,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <ul className="mt-4 space-y-2.5 text-[13px]">
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Pendek ≤ 2 mnt · 20 gbr', 'Short ≤ 2m · 20 img')}</span>
-                  <span className="font-mono font-bold">3 Token ≈ Rp3.000</span>
+                  <span className="font-mono font-bold">3 Credit ≈ Rp3.000</span>
                 </li>
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Sedang ≤ 5 mnt · 20 gbr', 'Medium ≤ 5m · 20 img')}</span>
-                  <span className="font-mono font-bold">5 Token ≈ Rp5.000</span>
+                  <span className="font-mono font-bold">5 Credit ≈ Rp5.000</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-[var(--text-muted)]">{t('Panjang ≤ 8 mnt · 35 gbr', 'Long ≤ 8m · 35 img')}</span>
-                  <span className="font-mono font-bold">8 Token ≈ Rp8.000</span>
+                  <span className="font-mono font-bold">8 Credit ≈ Rp8.000</span>
                 </li>
               </ul>
             </div>
@@ -1020,15 +1020,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <ul className="mt-4 space-y-2.5 text-[13px]">
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Pendek ≤ 5 mnt · 30 gbr', 'Short ≤ 5m · 30 img')}</span>
-                  <span className="font-mono font-bold">3 Token ≈ Rp3.000</span>
+                  <span className="font-mono font-bold">3 Credit ≈ Rp3.000</span>
                 </li>
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Sedang ≤ 13 mnt · 60 gbr', 'Med ≤ 13m · 60 img')}</span>
-                  <span className="font-mono font-bold">5 Token ≈ Rp5.000</span>
+                  <span className="font-mono font-bold">5 Credit ≈ Rp5.000</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-[var(--text-muted)]">{t('Panjang ≤ 21 mnt · 90 gbr', 'Long ≤ 21m · 90 img')}</span>
-                  <span className="font-mono font-bold">8 Token ≈ Rp8.000</span>
+                  <span className="font-mono font-bold">8 Credit ≈ Rp8.000</span>
                 </li>
               </ul>
             </div>
@@ -1043,15 +1043,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <ul className="mt-4 space-y-2.5 text-[13px]">
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Pendek ± 7 mnt / Motion 10s', 'Short ± 7m / Motion 10s')}</span>
-                  <span className="font-mono font-bold">2 Token ≈ Rp2.000</span>
+                  <span className="font-mono font-bold">2 Credit ≈ Rp2.000</span>
                 </li>
                 <li className="flex items-center justify-between border-b border-[var(--border-default)] pb-2">
                   <span className="text-[var(--text-muted)]">{t('Sedang ± 14 mnt / Motion 30s', 'Med ± 14m / Motion 30s')}</span>
-                  <span className="font-mono font-bold">3 Token ≈ Rp3.000</span>
+                  <span className="font-mono font-bold">3 Credit ≈ Rp3.000</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-[var(--text-muted)]">{t('Panjang ± 26 mnt / Motion 60s', 'Long ± 26m / Motion 60s')}</span>
-                  <span className="font-mono font-bold">5 Token ≈ Rp5.000</span>
+                  <span className="font-mono font-bold">5 Credit ≈ Rp5.000</span>
                 </li>
               </ul>
             </div>
@@ -1068,13 +1068,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <span className="text-[var(--text-muted)]">
                     {t('Mendengarkan video · per 30 mnt', 'Analyze video · per 30 min')}
                   </span>
-                  <span className="font-mono font-bold">3 RMToken</span>
+                  <span className="font-mono font-bold">3 Credit</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-[var(--text-muted)]">
                     {t('Tiap klip vertikal yang jadi', 'Each rendered vertical clip')}
                   </span>
-                  <span className="font-mono font-bold">2 RMToken</span>
+                  <span className="font-mono font-bold">2 Credit</span>
                 </li>
               </ul>
             </div>
@@ -1095,16 +1095,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              { id: 't20', name: '20 RMToken', bonus: '+40 Bonus Promo X3', price: 'Rp20.000', eq: 6 },
+              { id: 't20', name: '20 Credit', bonus: '+40 Bonus Promo X3', price: 'Rp20.000', eq: 6 },
               {
                 id: 't50',
-                name: '50 RMToken',
+                name: '50 Credit',
                 bonus: '+100 Bonus Promo X3',
                 price: 'Rp50.000',
                 eq: 16,
                 popular: true,
               },
-              { id: 't100', name: '100 RMToken', bonus: '+200 Bonus Promo X3', price: 'Rp100.000', eq: 33 },
+              { id: 't100', name: '100 Credit', bonus: '+200 Bonus Promo X3', price: 'Rp100.000', eq: 33 },
             ].map((pkg) => (
               <div
                 key={pkg.id}
@@ -1205,8 +1205,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </h2>
           <p className="mt-3 text-[15px] text-[var(--text-muted)]">
             {t(
-              'Masuk dengan akun Google, isi saldo, dan mulai dari satu ide. Gratis 6 RMToken untuk akun baru.',
-              'Sign in with Google, top up your balance, and start from a single idea. Free 6 RMToken for new accounts.'
+              'Masuk dengan akun Google, isi saldo, dan mulai dari satu ide. Gratis 6 Credit untuk akun baru.',
+              'Sign in with Google, top up your balance, and start from a single idea. Free 6 Credit for new accounts.'
             )}
           </p>
           <button
@@ -1307,7 +1307,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             <h2 className="mt-4 font-display text-xl font-bold">
-              {t('Gratis 6 RMToken untuk akun baru', 'Free 6 RMToken for new accounts')}
+              {t('Gratis 6 Credit untuk akun baru', 'Free 6 Credit for new accounts')}
             </h2>
             <p className="mt-1.5 text-[13.5px] text-[var(--text-muted)]">
               {t(

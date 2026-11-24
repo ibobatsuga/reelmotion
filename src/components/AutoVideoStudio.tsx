@@ -355,9 +355,9 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
               <div className="flex flex-wrap gap-2">
                 {(
                   [
-                    { id: 'short', idLabel: 'Pendek (3 Token)', enLabel: 'Short (3 Token)' },
-                    { id: 'medium', idLabel: 'Sedang (5 Token)', enLabel: 'Medium (5 Token)' },
-                    { id: 'long', idLabel: 'Panjang (8 Token)', enLabel: 'Long (8 Token)' },
+                    { id: 'short', idLabel: 'Pendek (3 Credit)', enLabel: 'Short (3 Credit)' },
+                    { id: 'medium', idLabel: 'Sedang (5 Credit)', enLabel: 'Medium (5 Credit)' },
+                    { id: 'long', idLabel: 'Panjang (8 Credit)', enLabel: 'Long (8 Credit)' },
                   ] as const
                 ).map((tr) => (
                   <button
@@ -594,7 +594,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
             <div className="inline-flex items-center gap-2.5 rounded-full bg-white px-4 py-2">
               <span className="h-2 w-2 rounded-full bg-[#56B847]" />
               <span className="text-[12.5px] font-semibold text-[#181924]">
-                {t('Biaya:', 'Cost:')} {currentCost} RMToken (≈ Rp
+                {t('Biaya:', 'Cost:')} {currentCost} Credit (≈ Rp
                 {(currentCost * 1000).toLocaleString('id-ID')})
               </span>
             </div>
@@ -613,7 +613,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                 <>
                   <WandSparkles className="h-4 w-4" />
                   <span>
-                    {t('Buat Video Sekarang', 'Create Video Now')} ({currentCost} RMToken)
+                    {t('Buat Video Sekarang', 'Create Video Now')} ({currentCost} Credit)
                   </span>
                 </>
               )}
@@ -802,7 +802,7 @@ export const AutoVideoStudio: React.FC<AutoVideoStudioProps> = ({
                       {job.mode} · {job.format}
                     </span>
                     <span className="font-mono text-[11px] font-bold text-[#6C7086]">
-                      −{job.tokensUsed} RMToken
+                      −{job.tokensUsed} Credit
                     </span>
                   </div>
 

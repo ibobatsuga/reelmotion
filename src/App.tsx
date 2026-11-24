@@ -209,8 +209,8 @@ export function App() {
             </h2>
             <p className="mt-1 text-[13px] text-[#6C7086]">
               {t(
-                'Akun baru otomatis mendapatkan bonus 6 RMToken gratis untuk langsung membuat video.',
-                'New accounts automatically receive 6 free RMTokens to create videos right away.'
+                'Akun baru otomatis mendapatkan bonus 6 Credit gratis untuk langsung membuat video.',
+                'New accounts automatically receive 6 free Credits to create videos right away.'
               )}
             </p>
 
@@ -284,8 +284,8 @@ export function App() {
               <Gift className="h-4 w-4 shrink-0" />
               <span>
                 {t(
-                  'Saldo 147 RMToken siap dipakai di dalam Studio',
-                  '147 RMToken balance ready inside Studio'
+                  'Saldo 147 Credit siap dipakai di dalam Studio',
+                  '147 Credit balance ready inside Studio'
                 )}
               </span>
             </div>

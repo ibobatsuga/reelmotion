@@ -181,7 +181,7 @@ export const INITIAL_LEDGER: TokenLedgerEntry[] = [
   },
   {
     id: 'tx-103',
-    title: 'Paket 50 RMToken + Promo X3 Token (+100 Bonus)',
+    title: 'Paket 50 Credit + Promo X3 Credit (+100 Bonus)',
     feature: 'topup',
     delta: 150,
     balanceAfter: 153,

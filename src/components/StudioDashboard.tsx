@@ -147,9 +147,9 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
       icon: <Clapperboard className="h-4 w-4" />,
       badge: 'Studio',
     },
-    { id: 'my-tokens', label: t('Saldo RMToken', 'Token Wallet'), icon: <Coins className="h-4 w-4" /> },
+    { id: 'my-tokens', label: t('Saldo Credit', 'Credit Wallet'), icon: <Coins className="h-4 w-4" /> },
     { id: 'payment', label: t('Isi Saldo', 'Top Up'), icon: <CreditCard className="h-4 w-4" />, badge: 'X3' },
-    { id: 'token-gratis', label: t('Token Gratis', 'Free Tokens'), icon: <Gift className="h-4 w-4" /> },
+    { id: 'token-gratis', label: t('Credit Gratis', 'Free Credits'), icon: <Gift className="h-4 w-4" /> },
     { id: 'galeri', label: t('Galeri Video', 'Video Gallery'), icon: <Film className="h-4 w-4" /> },
     { id: 'etalase', label: t('Etalase Tonton', 'Watch & Earn'), icon: <Play className="h-4 w-4" /> },
     { id: 'my-sosmed', label: t('Media Sosial', 'Social Media'), icon: <Share2 className="h-4 w-4" /> },
@@ -164,8 +164,8 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
     if (ok) {
       setVoucherMsg({
         text: t(
-          'Voucher berhasil ditukar! +10 RMToken sudah masuk ke saldo Anda.',
-          'Voucher redeemed! +10 RMToken added to your wallet.'
+          'Voucher berhasil ditukar! +10 Credit sudah masuk ke saldo Anda.',
+          'Voucher redeemed! +10 Credit added to your wallet.'
         ),
         ok: true,
       });
@@ -274,7 +274,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
           <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-3.5 shadow-sm">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-                {t('Saldo RMToken', 'RMToken Balance')}
+                {t('Saldo Credit', 'Credit Balance')}
               </span>
               <span className="rounded-full bg-[var(--success-bg)] px-2 py-0.5 text-[10px] font-extrabold text-[var(--success)]">
                 X3 PROMO
@@ -424,7 +424,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                     {t('Saldo Aktif', 'Active Balance')}
                   </div>
                   <div className="font-mono text-xl font-bold">
-                    {walletBalance} RMToken
+                    {walletBalance} Credit
                   </div>
                 </div>
               </div>
@@ -579,12 +579,12 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-default)] pb-5">
               <div>
                 <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
-                  {t('Saldo & Riwayat RMToken', 'RMToken Wallet & Ledger')}
+                  {t('Saldo & Riwayat Credit', 'Credit Wallet & Ledger')}
                 </h1>
                 <p className="mt-1 text-[13.5px] text-[var(--text-muted)]">
                   {t(
-                    'Setiap token yang masuk dan terpakai tercatat transparan per tahap pembuatan.',
-                    'Every token added or spent is recorded transparently per pipeline stage.'
+                    'Setiap credit yang masuk dan terpakai tercatat transparan per tahap pembuatan.',
+                    'Every credit added or spent is recorded transparently per pipeline stage.'
                   )}
                 </p>
               </div>
@@ -593,7 +593,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-[var(--accent-amber)] px-5 text-[13px] font-bold text-[var(--accent-text)] cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
-                {t('Isi Saldo RMToken', 'Top Up RMToken')}
+                {t('Isi Saldo Credit', 'Top Up Credit')}
               </button>
             </div>
 
@@ -603,7 +603,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                   {t('Saldo Tersedia', 'Available Balance')}
                 </div>
                 <div className="mt-2 font-mono text-3xl font-extrabold">
-                  {walletBalance} RMToken
+                  {walletBalance} Credit
                 </div>
                 <div className="mt-1 text-[12px] text-white/80">
                   ≈ Rp{(walletBalance * 1000).toLocaleString('id-ID')} · {t('Tidak pernah hangus', 'Never expires')}
@@ -614,7 +614,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 <div className="text-[12px] font-semibold text-[var(--text-muted)]">
                   {t('Sedang Ditahan (Tahap Aktif)', 'Currently Held')}
                 </div>
-                <div className="mt-2 font-mono text-3xl font-extrabold">0 RMToken</div>
+                <div className="mt-2 font-mono text-3xl font-extrabold">0 Credit</div>
                 <div className="mt-1 text-[12px] text-[var(--text-muted)]">
                   {t('Otomatis kembali bila tahap gagal', 'Released automatically if stage fails')}
                 </div>
@@ -625,7 +625,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                   {t('Pemakaian 30 Hari Terakhir', 'Last 30 Days Usage')}
                 </div>
                 <div className="mt-2 font-mono text-3xl font-extrabold">
-                  {ledger.filter((x) => x.delta < 0).reduce((a, b) => a + Math.abs(b.delta), 0)} RMToken
+                  {ledger.filter((x) => x.delta < 0).reduce((a, b) => a + Math.abs(b.delta), 0)} Credit
                 </div>
                 <div className="mt-1 text-[12px] text-[var(--text-muted)]">
                   {jobs.length} {t('video selesai', 'videos completed')}
@@ -636,13 +636,13 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
             <div className="rounded-2xl border border-[var(--border-default)] bg-[var(--bg-card)] p-5 space-y-4 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-display text-lg font-bold">
-                  {t('Catatan Mutasi Token', 'Token Transaction Ledger')}
+                  {t('Catatan Mutasi Credit', 'Credit Transaction Ledger')}
                 </h2>
                 <div className="flex gap-1 rounded-xl border border-[var(--border-default)] bg-[var(--bg-secondary)] p-1">
                   {(
                     [
                       { id: 'semua', label: t('Semua', 'All') },
-                      { id: 'masuk', label: t('Token Masuk', 'Added') },
+                      { id: 'masuk', label: t('Credit Masuk', 'Added') },
                       { id: 'pakai', label: t('Pemakaian', 'Spent') },
                     ] as const
                   ).map((f) => (
@@ -707,7 +707,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                               positive ? 'text-[var(--success)]' : 'text-[var(--danger)]'
                             }`}
                           >
-                            {positive ? `+${row.delta}` : row.delta} RMToken
+                            {positive ? `+${row.delta}` : row.delta} Credit
                           </div>
                           <div className="font-mono text-[11px] text-[var(--text-faint)]">
                             {t('Saldo:', 'Balance:')} {row.balanceAfter}
@@ -729,12 +729,12 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 QRIS & TRANSFER OTOMATIS
               </div>
               <h1 className="mt-1 font-display text-2xl sm:text-3xl font-bold tracking-tight">
-                {t('Isi Saldo RMToken', 'Top Up RMToken Balance')}
+                {t('Isi Saldo Credit', 'Top Up Credit Balance')}
               </h1>
               <p className="mt-1 text-[13.5px] text-[var(--text-muted)]">
                 {t(
-                  'Promo X3 Token aktif: dapatkan +200% bonus token langsung masuk ke saldo begitu QRIS terbayar.',
-                  'Promo X3 Token active: get +200% bonus tokens credited immediately upon QRIS payment.'
+                  'Promo X3 Credit aktif: dapatkan +200% bonus credit langsung masuk ke saldo begitu QRIS terbayar.',
+                  'Promo X3 Credit active: get +200% bonus credits credited immediately upon QRIS payment.'
                 )}
               </p>
             </div>
@@ -750,8 +750,8 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)]">
                   {t(
-                    `${selectedPkg.tokens + selectedPkg.bonus} RMToken (${selectedPkg.tokens} + ${selectedPkg.bonus} Bonus Promo X3) sudah masuk ke saldo Anda.`,
-                    `${selectedPkg.tokens + selectedPkg.bonus} RMToken (${selectedPkg.tokens} + ${selectedPkg.bonus} X3 Promo Bonus) have been added to your balance.`
+                    `${selectedPkg.tokens + selectedPkg.bonus} Credit (${selectedPkg.tokens} + ${selectedPkg.bonus} Bonus Promo X3) sudah masuk ke saldo Anda.`,
+                    `${selectedPkg.tokens + selectedPkg.bonus} Credit (${selectedPkg.tokens} + ${selectedPkg.bonus} X3 Promo Bonus) have been added to your balance.`
                   )}
                 </p>
                 <button
@@ -768,17 +768,17 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
             ) : (
               <div className="grid gap-4 md:grid-cols-3">
                 {[
-                  { id: 't20', name: '20 RMToken', tokens: 20, bonus: 40, price: 20000, eq: 6 },
+                  { id: 't20', name: '20 Credit', tokens: 20, bonus: 40, price: 20000, eq: 6 },
                   {
                     id: 't50',
-                    name: '50 RMToken',
+                    name: '50 Credit',
                     tokens: 50,
                     bonus: 100,
                     price: 50000,
                     eq: 16,
                     popular: true,
                   },
-                  { id: 't100', name: '100 RMToken', tokens: 100, bonus: 200, price: 100000, eq: 33 },
+                  { id: 't100', name: '100 Credit', tokens: 100, bonus: 200, price: 100000, eq: 33 },
                 ].map((pkg) => (
                   <div
                     key={pkg.id}
@@ -809,7 +809,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                           pkg.popular ? 'text-white/90' : 'text-[var(--accent-amber)]'
                         }`}
                       >
-                        {t('Total diterima:', 'Total received:')} {pkg.tokens + pkg.bonus} RMToken
+                        {t('Total diterima:', 'Total received:')} {pkg.tokens + pkg.bonus} Credit
                       </div>
                       <p
                         className={`mt-1 text-[12px] ${
@@ -851,12 +851,12 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
             <div>
               <h1 className="flex items-center gap-2 font-display text-2xl font-bold">
                 <Gift className="h-6 w-6 text-[var(--accent-amber)]" />
-                {t('Dapatkan RMToken Gratis', 'Get Free RMToken')}
+                {t('Dapatkan Credit Gratis', 'Get Free Credit')}
               </h1>
               <p className="mt-1 text-[13.5px] text-[var(--text-muted)]">
                 {t(
-                  'RMToken bisa didapat tanpa membeli: ambil bonus akun baru, tukar kode voucher, dan ajak teman lewat tautanmu.',
-                  'Earn RMToken without buying: claim the new-account bonus, redeem a voucher code, or invite friends with your referral link.'
+                  'Credit bisa didapat tanpa membeli: ambil bonus akun baru, tukar kode voucher, dan ajak teman lewat tautanmu.',
+                  'Earn Credit without buying: claim the new-account bonus, redeem a voucher code, or invite friends with your referral link.'
                 )}
               </p>
             </div>
@@ -870,8 +870,8 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
               </h3>
               <p className="text-[12.5px] text-[var(--text-muted)]">
                 {t(
-                  'Masukkan kode voucher (contoh: FLUXY10 atau REEL2026) untuk klaim +10 RMToken gratis.',
-                  'Enter a voucher code (e.g. FLUXY10 or REEL2026) to claim +10 free RMTokens.'
+                  'Masukkan kode voucher (contoh: FLUXY10 atau REEL2026) untuk klaim +10 Credit gratis.',
+                  'Enter a voucher code (e.g. FLUXY10 or REEL2026) to claim +10 free Credits.'
                 )}
               </p>
               <div className="flex gap-2">
@@ -907,7 +907,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                   {t('Tautan Ajak Teman (?ajak=FLUXY88)', 'Friend Referral Link (?ajak=FLUXY88)')}
                 </h3>
                 <span className="rounded-full bg-[var(--success-bg)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--success)]">
-                  +6 RMToken / {t('Teman', 'Friend')}
+                  +6 Credit / {t('Teman', 'Friend')}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -1022,7 +1022,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 ETALASE KOMUNITAS
               </div>
               <h1 className="mt-1 font-display text-2xl font-bold">
-                {t('Tonton Video Kreator → Kumpulkan Poin → Jadi RMToken', 'Watch Creator Videos → Earn Points → Convert to RMToken')}
+                {t('Tonton Video Kreator → Kumpulkan Poin → Jadi Credit', 'Watch Creator Videos → Earn Points → Convert to Credit')}
               </h1>
             </div>
 
@@ -1032,7 +1032,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                   {t('Waktu Tonton Terverifikasi Hari Ini', 'Verified Watch Time Today')}
                 </div>
                 <div className="mt-1 font-mono text-2xl font-extrabold">
-                  {watchSeconds} {t('detik', 'seconds')} · +2 RMToken
+                  {watchSeconds} {t('detik', 'seconds')} · +2 Credit
                 </div>
               </div>
               <button
@@ -1042,7 +1042,7 @@ export const StudioDashboard: React.FC<StudioDashboardProps> = ({
                 }}
                 className="rounded-xl bg-[var(--accent-amber)] px-5 py-2.5 text-[13px] font-bold text-[var(--accent-text)] cursor-pointer"
               >
-                {t('Tonton 30d & Klaim +2 RMToken', 'Watch 30s & Claim +2 RMToken')}
+                {t('Tonton 30d & Klaim +2 Credit', 'Watch 30s & Claim +2 Credit')}
               </button>
             </div>
           </div>
