@@ -123,7 +123,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div
           className="absolute -top-40 left-1/2 h-[620px] w-[1100px] -translate-x-1/2 rounded-full opacity-70 blur-[80px]"
           style={{
-            background: 'radial-gradient(closest-side, rgba(242, 135, 31, 0.28), transparent)',
+            background: 'radial-gradient(closest-side, rgba(77, 91, 175, 0.24), transparent)',
           }}
         />
         <div
@@ -298,7 +298,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <h1 className="mt-5 font-display text-[2.35rem] leading-[1.06] sm:text-5xl lg:text-[3.6rem] font-extrabold tracking-tight">
             <span className="block">{t('Dari satu ide,', 'From a single idea,')}</span>
-            <span className="block bg-gradient-to-r from-[#f2871f] via-[#f6a04a] to-[#e2591f] bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-[#4d5baf] via-[#717cbf] to-[#11c6c2] bg-clip-text text-transparent">
               {t('jadi video siap tayang.', 'to a ready-to-post video.')}
             </span>
           </h1>
@@ -313,14 +313,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
             <button
               onClick={() => onOpenAuth()}
-              className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[var(--accent-amber)] px-7 text-[14px] font-bold text-[var(--accent-text)] shadow-lg shadow-[rgba(242,135,31,.25)] hover:brightness-105 cursor-pointer transition"
+              className="inline-flex h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[var(--accent-amber)] px-7 text-[14px] font-bold text-[var(--accent-text)] shadow-lg shadow-[rgba(77,91,175,.28)] hover:brightness-105 cursor-pointer transition"
             >
-              {t('Mulai sekarang', 'Get started')}
+              {t('Buka Sovereign Studio', 'Open Sovereign Studio')}
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
               onClick={() => scrollToSection('contoh')}
-              className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-xl border border-[var(--border-default)] bg-[var(--bg-card)] px-7 text-[14px] font-semibold text-[var(--text-primary)] hover:border-[var(--border-hover)] cursor-pointer transition"
+              className="inline-flex h-12 w-full sm:w-auto items-center justify-center rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] px-7 text-[14px] font-semibold text-[var(--text-primary)] hover:border-[var(--border-hover)] cursor-pointer transition"
             >
               {t('Lihat contoh hasil', 'See showcase')}
             </button>

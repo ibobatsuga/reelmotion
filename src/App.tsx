@@ -24,16 +24,16 @@ export function App() {
 
   const [theme, setTheme] = useState<Theme>(() => {
     try {
-      return localStorage.getItem('reelmotion.theme') === 'light' ? 'light' : 'dark';
+      return localStorage.getItem('reelmotion.theme') === 'dark' ? 'dark' : 'light';
     } catch {
-      return 'dark';
+      return 'light';
     }
   });
 
   const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
-  const [userEmail, setUserEmail] = useState<string>('kreator@fluxy.id');
-  const [userName, setUserName] = useState<string>('Kreator Fluxy');
+  const [userEmail, setUserEmail] = useState<string>('estelle@reelmotion.studio');
+  const [userName, setUserName] = useState<string>('Estelle Darcy');
   const [isAdmin, setIsAdmin] = useState<boolean>(true);
   const [walletBalance, setWalletBalance] = useState<number>(147);
   const [jobs, setJobs] = useState<VideoJob[]>(INITIAL_JOBS);
@@ -45,10 +45,10 @@ export function App() {
     const root = document.documentElement;
     if (theme === 'dark') {
       root.classList.add('dark');
-      root.setAttribute('data-theme', 'charcoal');
+      root.setAttribute('data-theme', 'sovereign-dark');
     } else {
       root.classList.remove('dark');
-      root.removeAttribute('data-theme');
+      root.setAttribute('data-theme', 'sovereign');
     }
     try {
       localStorage.setItem('reelmotion.theme', theme);
